@@ -12,7 +12,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
-    
     password = serializers.CharField(
         write_only=True,
         required=True,
@@ -21,15 +20,18 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password')
+        fields = (id, 'username', 'email', 'password')
+
+    def validate_email(self, value):
+        return value.lower()
 
     def create(self, validated_data):
-        validated_data['email'] = validated_data['email'].lower()
-        user = User.objects.create(
+        validated_data['role'] = User.Role.FARMER
+        user = User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],
-            role=User.Role.FARMER
+            role=validated_data['role']
         )
         user.set_password(validated_data['password'])
         user.save()
-        return user 
+        return user

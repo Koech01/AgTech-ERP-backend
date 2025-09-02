@@ -1,12 +1,12 @@
+from django.db import transaction  
 from rest_framework import generics, status
 from .serializers import RegisterSerializer
+from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from django.db import transaction 
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 User = get_user_model()
@@ -26,43 +26,32 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class RegisterView(generics.CreateAPIView):
     """
-    Handles farmer signup.
-    Admin accounts should be created via management command.
+    Handles farmer signup. Admin accounts are created via management command.
     """
     queryset = User.objects.all()
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
     @transaction.atomic
-    def post(self, request, *args, **kwargs):
-        """
-        Custom POST handler to:
-        - Validate incoming data
-        - Create user as farmer by default
-        - Return JWT tokens on success
-        """
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        # Create user instance
-        user = serializer.save(role=User.Role.FARMER)
-
-        # Generate tokens
+    def perform_create(self, serializer):
+        user = serializer.save()
         refresh = RefreshToken.for_user(user)
-        refresh['role'] = user.role
-        refresh['username'] = user.username
+        refresh["role"] = user.role
+        refresh["username"] = user.username
 
-        # Prepare response payload
-        data = {
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-                "role": user.role,
+        self.response_payload = {
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'role': user.role,
             },
-            "tokens": {
-                "access": str(refresh.access_token),
-                "refresh": str(refresh),
+            'tokens': {
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
             },
         }
-        return Response(data, status=status.HTTP_201_CREATED)
+
+    def create(self, request, *args, **kwargs):
+        super().create(request, *args, **kwargs)
+        return Response(self.response_payload, status=status.HTTP_201_CREATED)
