@@ -28,7 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #Added 
-    'users'
+    'users', 
+    'crops', 
+    'farmers'
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -131,7 +133,13 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+CSRF_TRUSTED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:5173' ]
+
+CORS_ALLOWED_ORIGINS = [ 'http://localhost:5173', 'http://127.0.0.1:5173' ]
+
+CORS_ALLOW_CREDENTIALS = True
