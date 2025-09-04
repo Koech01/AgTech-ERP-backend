@@ -29,8 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #Added 
     'users', 
-    'crops', 
-    'farmers'
+    'crops'
 ]
 
 AUTH_USER_MODEL = 'users.User'
@@ -72,11 +71,14 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -119,10 +121,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MEDIA_URL  = '/media/'
+
 CORS_ALLOW_ALL_ORIGINS = True  # For dev, restrict in prod
 
-# DRF + JWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

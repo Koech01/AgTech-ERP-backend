@@ -1,13 +1,11 @@
 from django.urls import path
-from .views import CropListViewAdmin, CropDetailViewAdmin, CropListViewFarmer,  CropDetailViewFarmer   
-
+from .views import FarmerCropListCreateView, FarmerCropRetrieveUpdateDestroyView, FarmerCropStatsView, AdminStatsView 
 
 urlpatterns = [
     # Admin routes
-    path('v1/crops/', CropListViewAdmin.as_view(), name='crop_list_admin_view'),
-    path('v1/crops/<int:pk>/', CropDetailViewAdmin.as_view(), name='crop_detail_admin_view'),
-
+    path('v1/crops/stats/', AdminStatsView.as_view(), name='admin_crop_stats_view'),
     # Farmer routes
-    path('v1/farmer/crops/', CropListViewFarmer.as_view(), name='crop_list_farmer_view'),
-    path('v1/farmer/crops/<int:pk>/', CropDetailViewFarmer.as_view(), name='crop_detail_farmer_view'),
+    path('v1/farmer/crops/stats/', FarmerCropStatsView.as_view(), name='farmer_crop_stats_view'),
+    path('v1/farmer/crops/', FarmerCropListCreateView.as_view(), name='farmer_crop_list_create_view'),
+    path('v1/farmer/crops/<int:pk>/', FarmerCropRetrieveUpdateDestroyView.as_view(), name='farmer_crop_detail_view'),
 ]

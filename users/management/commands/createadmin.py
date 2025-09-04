@@ -11,7 +11,7 @@ class Command(BaseCommand):
             User.objects.create_superuser(
                 username='admin',
                 email='admin@agritech.com',
-                password='AdminPass123!',
+                password='Admin@123',
                 role=User.Role.ADMIN
             )
             self.stdout.write(self.style.SUCCESS('Admin user created.'))
