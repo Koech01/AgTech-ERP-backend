@@ -24,7 +24,7 @@ Before you begin, ensure you have the following installed:
 - [Git](https://git-scm.com/downloads)
 - [Python](https://www.python.org/downloads/) (3.x)
 - [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html)
-- [virtualenv](https://www.postgresql.org/download/)
+- [PostgreSQL](https://www.postgresql.org/download/)
 
 
 # Installation
