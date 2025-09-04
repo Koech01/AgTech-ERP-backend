@@ -7,7 +7,8 @@ AgTech ERP platform built with Django and PostgreSQL. It enables Admin users to 
     - Tech Stack
     - Prerequisites
     - Installation
-    - Environment Setup 
+    - Environment Setup
+    - PostgreSQL Setup  
     - Running the Backend 
     - Demo Credentials 
 
@@ -23,6 +24,7 @@ Before you begin, ensure you have the following installed:
 - [Git](https://git-scm.com/downloads)
 - [Python](https://www.python.org/downloads/) (3.x)
 - [virtualenv](https://virtualenv.pypa.io/en/latest/installation.html)
+- [virtualenv](https://www.postgresql.org/download/)
 
 
 # Installation
@@ -60,6 +62,46 @@ SECRET_KEY=your_generated_secret_key_here
 DEBUG=True
 ```
 You can now access the application at `http://127.0.0.1:8000/`.
+
+
+# PostgreSQL Setup.
+Set up the PostgreSQL database and user for Django::
+
+1. Start the PostgreSQL service:
+```bash
+sudo systemctl start postgresql
+sudo systemctl enable postgresql 
+```
+
+2. Access the PostgreSQL shell:
+```bash
+sudo -u postgres psql
+```
+
+3. Create a database and a user:
+```env
+CREATE DATABASE agritech_db;
+CREATE USER admin WITH PASSWORD 'Admin@123';
+GRANT ALL PRIVILEGES ON DATABASE agritech_db TO admin;
+```
+
+4. Grant schema and table privileges:
+```env
+\c agritech_db   -- connect to your database
+
+-- Give admin full privileges on the public schema
+GRANT ALL PRIVILEGES ON SCHEMA public TO admin;
+
+-- Allow admin to create tables, sequences, and functions by default
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO admin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO admin;
+
+\q  -- quit
+```
+
+You can now access the application at `http://127.0.0.1:8000/`.
+
 
 # Demo Credentials
     - Admin  : email-admin@agritech.com  | password-Admin@123
