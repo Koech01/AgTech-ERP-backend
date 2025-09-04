@@ -101,6 +101,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO a
 ```
 
 You can now access the application at `http://127.0.0.1:8000/`.
+
 For admin account `python manage.py createadmin`.
 
 # Demo Credentials
