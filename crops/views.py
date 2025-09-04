@@ -12,20 +12,21 @@ User = get_user_model()
 
 class FarmerCropStatsView(generics.GenericAPIView):
     """
-    Returns crop quantities grouped by crop_type, total count for the logged-in farmer,
-    and the farmer's rank based on total crops compared to other farmers.
+    Provides statistics for the logged-in farmer:
+    - Total quantity of crops (kgs)
+    - Total crops count
+    - Farmer's rank based on total crops quantity to other farmers
+    Access: Farmers only
     """
     permission_classes = [IsAuthenticated, IsFarmer]
 
     def get(self, request, *args, **kwargs):
-        # Crop quantities grouped by type
         stats = (
             Crop.objects.filter(farmer=request.user)
             .values('crop_type')
             .annotate(total_quantity=Sum('quantity'))
         )
 
-        # Ensure all crop types are present
         all_types = dict(Crop.CROP_TYPES)
         crop_data = []
         total_count = 0
@@ -35,8 +36,6 @@ class FarmerCropStatsView(generics.GenericAPIView):
             crop_data.append({'crop_type': label, 'count': count})
             total_count += count
 
-        # --- Calculate rank ---
-        # Aggregate total crops per farmer
         farmer_totals = (
             Crop.objects
             .values('farmer')
@@ -44,7 +43,6 @@ class FarmerCropStatsView(generics.GenericAPIView):
             .order_by('-total_crops')
         )
 
-        # Assign rank (dense ranking)
         rank = 1
         for i, f in enumerate(farmer_totals, start=1):
             if f['farmer'] == request.user.id:
@@ -67,14 +65,10 @@ class AdminStatsView(generics.GenericAPIView):
     """
     permission_classes = [IsAuthenticated, IsAdmin]
 
-    def get(self, request, *args, **kwargs):
-        # Total number of farmers
+    def get(self, request, *args, **kwargs): 
         total_farmers = User.objects.filter(role=User.Role.FARMER).count()
-
-        # Total number of crops
         total_crops = Crop.objects.aggregate(total=Sum('quantity'))['total'] or 0
-
-        # Total crops per farmer for chart
+ 
         crops_per_farmer_qs = (
             Crop.objects.values('farmer__username')
             .annotate(total_crops=Sum('quantity'))
@@ -95,27 +89,31 @@ class AdminStatsView(generics.GenericAPIView):
 
 class FarmerCropListCreateView(generics.ListCreateAPIView):
     """
-    List crops for the authenticated farmer, or all crops if the user is an admin.
-    Allow creating new crops.
+    Provides admin-level statistics:
+    - Total number of farmers
+    - Total number of crops quantity
+    - List of crops per farmer for chart
+    Access: Admins only
     """
     serializer_class = CropSerializer
-    permission_classes = [IsAuthenticated]  # Only require authentication
+    permission_classes = [IsAuthenticated] 
 
     def get_queryset(self):
         user = self.request.user
-        if user.role == User.Role.ADMIN:  # Use role instead of superuser for clarity
+        if user.role == User.Role.ADMIN:  
             return Crop.objects.all().order_by('-created')
-        # Regular farmer sees only their crops
         return Crop.objects.filter(farmer=user).order_by('-created')
 
     def perform_create(self, serializer):
-        # Always associate the crop with the authenticated user
         serializer.save(farmer=self.request.user)
 
 
 class FarmerCropRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     """
-    Retrieve, update, or delete a single crop owned by the authenticated farmer.
+    Retrieve, update, or delete crops.
+    - Farmers can only modify their own crops
+    - Admin can delete any crop
+    Access: Authenticated users
     """
     serializer_class = CropSerializer
     permission_classes = [IsAuthenticated]

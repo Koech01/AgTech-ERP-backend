@@ -16,15 +16,18 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 User = get_user_model()
 
-# Custom token to include role
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Extends the default JWT token serializer to include the user's role in the token payload.
+    """
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token['role'] = user.role  # embed role in token
+        token['role'] = user.role  
         return token
 
-    def validate(self, attrs):
+    def validate(self, attrs): 
         data = super().validate(attrs)
         data['role'] = self.user.role  
         return data
@@ -35,9 +38,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 class SignupView(generics.CreateAPIView):
-    '''
-    Handles farmer signup. Admin accounts are created via management command.
-    '''
+    """ 
+    Admin accounts are created separately via management command.
+    Returns user info and JWT tokens on success.
+    """
     queryset = User.objects.all()
     permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
@@ -68,9 +72,9 @@ class SignupView(generics.CreateAPIView):
 
 class UserProfileView(generics.RetrieveAPIView):
     """
-    Returns current logged-in user's info including profile_icon URL.
+    Retrieves current logged-in user's information. 
+    Access: Authenticated users
     """
-    
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
@@ -79,6 +83,12 @@ class UserProfileView(generics.RetrieveAPIView):
 
 
 class UserProfileUpdateView(APIView):
+    """
+    Allows authenticated users to update their profile:
+    - username, email, and profile icon
+    - validates email uniqueness and format
+    Access: both admin and farmer
+    """
     permission_classes = [IsAuthenticated]
 
     def patch(self, request):
@@ -87,8 +97,7 @@ class UserProfileUpdateView(APIView):
 
         username = data.get('username', user.username)
         email = data.get('email', user.email)
-
-        # Email validation
+ 
         if email != user.email:
             try:
                 validate_email(email)
@@ -99,12 +108,12 @@ class UserProfileUpdateView(APIView):
 
         user.username = username
         user.email = email
-
-        # Handle profile icon upload
+ 
         profile_icon = request.FILES.get('profileIcon')
         if profile_icon:
             user.profile_icon = profile_icon
         user.save()
+
         return Response({
             'id': user.id,
             'username': user.username,
@@ -114,8 +123,10 @@ class UserProfileUpdateView(APIView):
         }, status=status.HTTP_200_OK)
     
 
-# List & Create Farmers (Admin only)
 class FarmerListCreateView(generics.ListCreateAPIView):
+    """
+    List all farmers or create a new farmer (Admin only). 
+    """
     queryset = User.objects.filter(role=User.Role.FARMER).order_by('-created')
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
@@ -134,8 +145,10 @@ class FarmerListCreateView(generics.ListCreateAPIView):
         return Response(UserSerializer(farmer).data, status=status.HTTP_201_CREATED)
 
 
-# Retrieve, Update, Delete Farmer (Admin only)
 class FarmerDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update, or delete a specific farmer (Admin only).
+    """
     queryset = User.objects.filter(role=User.Role.FARMER)
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
@@ -144,8 +157,11 @@ from rest_framework.renderers import JSONRenderer
 
 class LogoutView(APIView):
     """
-    Logout user by blacklisting the refresh token and clearing cookie.
-    Only accepts POST requests.
+    Logs out a user by:
+    - Blacklisting the refresh token (if present)
+    - Clearing the refresh token cookie
+    Access: Public (anyone can call)
+    Method: POST only
     """
     permission_classes = [AllowAny] 
     renderer_classes = [JSONRenderer]
