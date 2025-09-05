@@ -4,11 +4,11 @@ AgTech ERP platform built with Django and PostgreSQL. It enables Admin users to 
 
 # Table of Contents
     - Overview
-    - Tech Stack
     - Prerequisites
     - Installation
     - Environment Setup
     - PostgreSQL Setup  
+    - Create Django Admin & Demo Farmer Accounts
     - Running the Backend 
     - Demo Credentials 
 
@@ -61,11 +61,9 @@ python -c 'from django.core.management.utils import get_random_secret_key; print
 SECRET_KEY=your_generated_secret_key_here
 DEBUG=True
 ```
-You can now access the application at `http://127.0.0.1:8000/`.
-
 
 # PostgreSQL Setup.
-Set up the PostgreSQL database and user for Django::
+Set up the PostgreSQL database and user for Django:
 
 1. Start the PostgreSQL service:
 ```bash
@@ -98,6 +96,39 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO a
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO admin;
 
 \q  -- quit
+```
+
+# Create Django Admin & Demo Farmer Accounts.
+Set up the PostgreSQL database and user for Django:
+
+1. Create the Django superuser (Admin):
+```bash
+python manage.py createsuperuser
+# Follow prompts to create: username, email, password
+# Example:
+# Username: admin
+# Email: admin@agritech.com
+# Password: Admin@123
+```
+
+2. Seed demo farmer account (Koech) via Django shell:
+```bash
+python manage.py shell
+```
+
+```bash
+from django.contrib.auth.models import User
+from users.models import User   
+
+farmer = User.objects.create_user(
+    username='koech',
+    email='koech@agritech.com',
+    password='Koech@123',
+    role=User.Role.FARMER
+)
+
+User.objects.create(user=farmer)
+exit()
 ```
 
 You can now access the application at `http://127.0.0.1:8000/`.
