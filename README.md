@@ -105,5 +105,6 @@ You can now access the application at `http://127.0.0.1:8000/`.
 For admin account `python manage.py createadmin`.
 
 # Demo Credentials
-    - Admin  : email-admin@agritech.com  | password-Admin@123
-    - Farmer : koech@agritech.com  | Koech@123
+  - Link   : [Ag Tech ERP](https://ag-tech-erp-frontend-deploy.vercel.app/)
+  - Admin  : admin@agritech.com | password-Admin@123
+  - Farmer : koech@agritech.com | Koech@123
