@@ -20,22 +20,31 @@ class FarmerCropStatsView(generics.GenericAPIView):
     """
     permission_classes = [IsAuthenticated, IsFarmer]
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs): 
         stats = (
             Crop.objects.filter(farmer=request.user)
             .values('crop_type')
             .annotate(total_quantity=Sum('quantity'))
         )
+ 
+        names_by_type = {}
+        for crop in Crop.objects.filter(farmer=request.user):
+            names_by_type.setdefault(crop.crop_type, []).append(crop.name)
 
         all_types = dict(Crop.CROP_TYPES)
         crop_data = []
         total_count = 0
+
         for key, label in all_types.items():
             matched = next((item for item in stats if item['crop_type'] == key), None)
             count = matched['total_quantity'] if matched else 0
-            crop_data.append({'crop_type': label, 'count': count})
+            crop_data.append({
+                'name': names_by_type.get(key, []),  
+                'crop_type': label,
+                'count': count
+            })
             total_count += count
-
+ 
         farmer_totals = (
             Crop.objects
             .values('farmer')
