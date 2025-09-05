@@ -50,6 +50,7 @@ class FarmerCropStatsView(generics.GenericAPIView):
                 break
 
         return Response({
+            "username": request.user.username,
             'crops_by_type': crop_data,
             'total_count': total_count,
             'rank': rank
