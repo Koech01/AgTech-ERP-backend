@@ -104,8 +104,7 @@ Set up the PostgreSQL database and user for Django:
 1. Create the Django superuser (Admin):
 ```bash
 python manage.py createsuperuser
-# Follow prompts to create: username, email, password
-# Example:
+# Follow prompts to create: username, email, password 
 # Username: admin
 # Email: admin@agritech.com
 # Password: Admin@123
@@ -117,17 +116,18 @@ python manage.py shell
 ```
 
 ```bash
-from django.contrib.auth.models import User
 from users.models import User   
 
+# Create Farmer user
 farmer = User.objects.create_user(
     username='koech',
     email='koech@agritech.com',
     password='Koech@123',
-    role=User.Role.FARMER
+    role=User.Role.FARMER  
 )
 
-User.objects.create(user=farmer)
+farmer.save()   
+ 
 exit()
 ```
 
