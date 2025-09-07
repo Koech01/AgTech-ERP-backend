@@ -103,7 +103,7 @@ class FarmerCropListCreateView(generics.ListCreateAPIView):
     - Total number of farmers
     - Total number of crops quantity
     - List of crops per farmer for chart
-    Access: Admins only
+    Access: Authenticated user
     """
     serializer_class = CropSerializer
     permission_classes = [IsAuthenticated] 
