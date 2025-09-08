@@ -100,14 +100,12 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO a
 
 # Create Django Admin & Demo Farmer Accounts.
 Set up the PostgreSQL database and user for Django:
+ 
+1. Creating superuser (Admin):
+The admin account is **pre-seeded** and can be created using the following command:
 
-1. Create the Django superuser (Admin):
 ```bash
-python manage.py createsuperuser
-# Follow prompts to create: username, email, password 
-# Username: admin
-# Email: admin@agritech.com
-# Password: Admin@123
+python manage.py createadmin
 ```
 
 2. Seed demo farmer account (Koech) via Django shell:
@@ -132,9 +130,7 @@ exit()
 ```
 
 You can now access the application at `http://127.0.0.1:8000/`.
-
-For admin account `python manage.py createadmin`.
-
+ 
 # Demo Credentials
   - Link   : [Ag Tech ERP](https://ag-tech-erp-frontend-deploy.vercel.app/)
   - Admin  : email - admin@agritech.com | password - Admin@123
