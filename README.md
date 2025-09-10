@@ -65,6 +65,12 @@ DEBUG=True
 # PostgreSQL Setup.
 Set up the PostgreSQL database and user for Django:
 
+1. Make migrations for the  **users** app:
+```bash
+python manage.py makemigrations users
+python manage.py migrate users
+```
+
 1. Start the PostgreSQL service:
 ```bash
 sudo systemctl start postgresql
@@ -95,7 +101,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON TABLES TO admi
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON SEQUENCES TO admin;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL PRIVILEGES ON FUNCTIONS TO admin;
 
-\q  -- quit
+\q   
 ```
 
 # Create Django Admin & Demo Farmer Accounts.

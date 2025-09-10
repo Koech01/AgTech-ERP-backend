@@ -2,3 +2,5 @@
 bin/
 lib/
 .env
+lib64/
+include/
