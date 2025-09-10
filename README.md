@@ -33,7 +33,7 @@ Clone the repository and set up your virtual environment:
 1. Clone the repository:
 ```bash
 git clone https://github.com/Koech01/AgTech-ERP-backend
-virtualenv AgTech-ERP-backend/
+python3 -m venv AgTech-ERP-backend
 cd AgTech-ERP-backend
 ```
 
