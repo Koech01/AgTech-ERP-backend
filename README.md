@@ -142,6 +142,11 @@ farmer.save()
 exit()
 ```
 
+4. Start the Django development server
+```bash
+python manage.py runserver
+```
+
 You can now access the application at `http://127.0.0.1:8000/`.
  
 # Demo Credentials
