@@ -60,6 +60,13 @@ python -c 'from django.core.management.utils import get_random_secret_key; print
 ```env
 SECRET_KEY=your_generated_secret_key_here
 DEBUG=True
+
+# Database Configuration
+DB_NAME=agritech_db
+DB_USER=admin
+DB_PASSWORD=Admin@123
+DB_HOST=127.0.0.1
+DB_PORT=5432
 ```
 
 # PostgreSQL Setup.
