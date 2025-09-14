@@ -78,25 +78,25 @@ python manage.py makemigrations users
 python manage.py migrate users
 ```
 
-1. Start the PostgreSQL service:
+2. Start the PostgreSQL service:
 ```bash
 sudo systemctl start postgresql
 sudo systemctl enable postgresql 
 ```
 
-2. Access the PostgreSQL shell:
+3. Access the PostgreSQL shell:
 ```bash
 sudo -u postgres psql
 ```
 
-3. Create a database and a user:
+4. Create a database and a user:
 ```env
 CREATE DATABASE agritech_db;
 CREATE USER admin WITH PASSWORD 'Admin@123';
 GRANT ALL PRIVILEGES ON DATABASE agritech_db TO admin;
 ```
 
-4. Grant schema and table privileges:
+5. Grant schema and table privileges:
 ```env
 \c agritech_db   -- connect to your database
 
