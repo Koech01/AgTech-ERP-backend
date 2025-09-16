@@ -7,6 +7,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny
+from rest_framework.renderers import JSONRenderer
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -152,7 +153,6 @@ class FarmerDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.filter(role=User.Role.FARMER)
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated, IsAdmin]
-from rest_framework.renderers import JSONRenderer
 
 
 class LogoutView(APIView):
